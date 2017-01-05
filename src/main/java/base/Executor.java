@@ -143,6 +143,17 @@ public class Executor extends Utility implements Runnable {
 		end();
 	}
 
+	
+	/**
+	 * Function to Business Keywords
+	 * 
+	 * @param1 nil
+	 * @return LinkedHashMap<String, String>
+	 * @author Hari
+	 * @since 01/05/2017
+	 * 
+	 */
+	
 	public LinkedHashMap<String, String> getKeywords() {
 
 		LinkedHashMap<String, String> keywordMap = new LinkedHashMap<String, String>();
