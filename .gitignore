@@ -1,5 +1,5 @@
 /target/
-RunManager.xls
-AppiumServer.txt
+*.xls
+*.txt
 /LatestResult/
 /Results/
