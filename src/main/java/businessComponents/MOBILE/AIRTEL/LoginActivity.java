@@ -28,9 +28,9 @@ public class LoginActivity extends Utility implements RoutineObjectRepository {
 	}
 
 	public void login() {
-		EnterText(ID_TXT_USERNAME, "Enter - Username", "catsadm");
-		EnterText(ID_TXT_PASSWORD, "Enter - Password", "catscats11");
-		HideKeyboard();
+		//EnterText(ID_TXT_USERNAME, "Enter - Username", "catsadm");
+		//EnterText(ID_TXT_PASSWORD, "Enter - Password", "catscats11");
+		//HideKeyboard();
 		Click(ID_BTN_CONNECT, "Click - Connect button");
 	}
 }

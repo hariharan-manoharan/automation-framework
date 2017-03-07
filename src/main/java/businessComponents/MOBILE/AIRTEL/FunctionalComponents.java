@@ -7,6 +7,7 @@ import com.relevantcodes.extentreports.ExtentTest;
 import io.appium.java_client.android.AndroidDriver;
 import main.java.testDataAccess.DataTable;
 import main.java.utils.Utility;
+import main.java.utils.SqlQueries;
 
 public class FunctionalComponents extends Utility {
 
@@ -35,7 +36,7 @@ public class FunctionalComponents extends Utility {
 	}
 	
 	
-	public void locationInquiryRoutine() throws TimeoutException, NoSuchElementException {
+	/*public void locationInquiryRoutine() throws TimeoutException, NoSuchElementException {
 		RoutinesActivity routinesActivity = new RoutinesActivity(test, driver, dataTable);
 		routinesActivity.locationInquiry();
 	}
@@ -53,6 +54,11 @@ public class FunctionalComponents extends Utility {
 	public void shipRoutine() throws TimeoutException, NoSuchElementException {
 		RoutinesActivity routinesActivity = new RoutinesActivity(test, driver, dataTable);
 		routinesActivity.ship();
+	}*/
+	
+	public void assetUpdateRoutine() throws TimeoutException, NoSuchElementException {
+		RoutinesActivity routinesActivity = new RoutinesActivity(test, driver, dataTable);
+		routinesActivity.assetUpdate();
 	}
 
 }

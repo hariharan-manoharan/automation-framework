@@ -183,7 +183,8 @@ public class Executor extends Utility implements Runnable {
 		capabilities.setCapability("appActivity", testParameters.getAppActivity());
 		capabilities.setCapability("unicodeKeyboard", "true");
 		capabilities.setCapability("resetKeyboard", "true");
-		capabilities.setCapability("newCommandTimeout", "60 * 5");
+		capabilities.setCapability("newCommandTimeout", "60");		
+		capabilities.setCapability("noReset", true);
 		
 		driver = new AndroidDriver(new URL(
 				"http://" + properties.getProperty("RemoteAddress") + ":" + testParameters.getPort() + "/wd/hub"),

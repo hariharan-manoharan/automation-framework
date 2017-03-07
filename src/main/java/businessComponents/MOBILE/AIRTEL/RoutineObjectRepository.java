@@ -48,10 +48,12 @@ public interface RoutineObjectRepository {
 	By XPATH_SEARCH_WEBVIEW = By.xpath("//div[@class='ng-scope']/div[@class='btn-group pull-right ng-scope']");
 	
 	By XPATH_LABEL = By.xpath("");
-	By XPATH_TXT = By.xpath("//android.webkit.WebView[@content-desc='Fulcrum Mobility']/android.widget.EditText[1]");
+	//By XPATH_TXT = By.xpath("//android.webkit.WebView[@content-desc='Fulcrum Mobility']/android.widget.EditText[1]");
 	By XPATH_TXT_GET = By.xpath("//android.webkit.WebView[@content-desc='Fulcrum Mobility']/android.widget.EditText[1][contains(@content-desc,'-')]");
 	By XPATH_SEARCH = By.xpath("");
 	
+	
+	String XPATH_TXT = ".//android.view.View[@content-desc='%s']";
 	
 	
 	// TRANSFER REQUEST RELATED QUERIES
