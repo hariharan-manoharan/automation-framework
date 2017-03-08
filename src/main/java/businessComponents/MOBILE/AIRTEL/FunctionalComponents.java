@@ -35,29 +35,9 @@ public class FunctionalComponents extends Utility {
 		profilesActivity.selectProfile();
 	}
 	
-	
-	/*public void locationInquiryRoutine() throws TimeoutException, NoSuchElementException {
-		RoutinesActivity routinesActivity = new RoutinesActivity(test, driver, dataTable);
-		routinesActivity.locationInquiry();
-	}
-	
-	public void pickRoutine() throws TimeoutException, NoSuchElementException{
-		RoutinesActivity routinesActivity = new RoutinesActivity(test, driver, dataTable);
-		routinesActivity.pick();
-	}
-	
-	public void packRoutine() throws TimeoutException, NoSuchElementException {
-		RoutinesActivity routinesActivity = new RoutinesActivity(test, driver, dataTable);
-		routinesActivity.pack();
-	}
-	
-	public void shipRoutine() throws TimeoutException, NoSuchElementException {
-		RoutinesActivity routinesActivity = new RoutinesActivity(test, driver, dataTable);
-		routinesActivity.ship();
-	}*/
-	
+
 	public void assetUpdateRoutine() throws TimeoutException, NoSuchElementException {
-		RoutinesActivity routinesActivity = new RoutinesActivity(test, driver, dataTable);
+		AssetUpdate routinesActivity = new AssetUpdate(test, driver, dataTable);
 		routinesActivity.assetUpdate();
 	}
 
