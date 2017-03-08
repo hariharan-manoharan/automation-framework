@@ -60,9 +60,6 @@ public class AssetUpdate extends Utility implements RoutineObjectRepository {
 			EnterText(By.xpath(String.format(XPATH_TXT, "Enter Notes :")), "Enter Notes :", "Asset Update - Test Notes");
 			ClickNext();
 			
-			EnterText(By.xpath(String.format(XPATH_TXT, "Enter Barcode (*) :")), "Enter Barcode (*) :" + assetcode, assetcode);
-			ClickNext();
-			
 			//Verify whether Transaction is completed successfully
 			result = isObjectPresent(By.xpath(String.format(XPATH_TXT, "Enter Barcode (*) :")),"Loop field - Enter Barcode (*) :");
 			
