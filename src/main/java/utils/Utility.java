@@ -75,7 +75,7 @@ public class Utility {
 	}
 
 	/**
-	 * Function to log test report with screenshot
+	 * Function to log test report with screenshot and Status PASS
 	 * 
 	 * @param1 String reportName
 	 * @return void
@@ -99,7 +99,33 @@ public class Utility {
 				"<b>Screenshot: <b>" + test.addScreenCapture("./" + screenshotName + ".png"));
 
 	}
+	
+	
+	/**
+	 * Function to log test report with screenshot and Status INFO
+	 * 
+	 * @param1 String reportName
+	 * @return void
+	 * @author Hari
+	 * @since 12/27/2016
+	 * 
+	 */
 
+	public void takeScreenshotStatus(String reportName, LogStatus status) {
+
+		String screenshotName = getCurrentFormattedTime();
+
+		File scrFile = ((TakesScreenshot) this.driver).getScreenshotAs(OutputType.FILE);
+		try {
+			FileUtils.copyFile(scrFile,
+					new File("./Results/" + HtmlReport.reportFolderName + "/" + screenshotName + ".png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		test.log(status, reportName,
+				"<b>Screenshot: <b>" + test.addScreenCapture("./" + screenshotName + ".png"));
+
+	}
 	/**
 	 * Function to log test report with screenshot - WEBVIEW
 	 * 
@@ -141,8 +167,7 @@ public class Utility {
 	 */
 
 	public void report(String reportName, LogStatus status) {
-
-		test.log(status, reportName);
+		takeScreenshotStatus(reportName, status);		
 
 	}
 
@@ -207,26 +232,26 @@ public class Utility {
 	 * 
 	 */
 
-	public boolean isObjectPresent(final By by, String objectName) throws TimeoutException, NoSuchElementException {
-
-		FluentWait<WebDriver> wait = new FluentWait<WebDriver>(this.driver);
-		wait.pollingEvery(5, TimeUnit.SECONDS);
-		wait.withTimeout(100, TimeUnit.SECONDS);
-		wait.ignoring(NoSuchElementException.class);
-
-		Function<WebDriver, Boolean> function = new Function<WebDriver, Boolean>() {
-
-			@Override
-			public Boolean apply(WebDriver arg0) {
-				WebElement element = arg0.findElement(by);
-				if (element != null) {
-					return true;
-				}
-				return false;
-			}
-		};
-		test.log(LogStatus.PASS, "Object - " + objectName + " is present", "");
-		return wait.until(function);
+	public boolean isObjectPresent(final By by, final String objectName) {
+		
+		boolean present = false;
+		
+		try{
+		
+		present = this.driver.findElement(by).isDisplayed();
+		
+		if(present){
+			test.log(LogStatus.PASS, "Object - " + objectName + " is present", "");
+			return true;					
+		}else{
+			test.log(LogStatus.FAIL, "Object - " + objectName + " is not present", "");
+			return false;
+		}	
+		}catch(Exception e){
+			test.log(LogStatus.FAIL, "Object - " + objectName + " is not present", "");
+			return false;
+		}
+		
 
 	}
 

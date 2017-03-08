@@ -6,12 +6,16 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+
 import io.appium.java_client.android.AndroidDriver;
 import main.java.testDataAccess.DataTable;
 import main.java.utils.Utility;
 
 public class AssetUpdate extends Utility implements RoutineObjectRepository {
 	
+	
+	boolean result = false;
 
 	@SuppressWarnings("rawtypes")
 	public AssetUpdate(ExtentTest test, AndroidDriver driver, DataTable dataTable) {
@@ -27,12 +31,11 @@ public class AssetUpdate extends Utility implements RoutineObjectRepository {
 	public void assetUpdate() throws TimeoutException, NoSuchElementException,  WebDriverException {
 		
 		
-		
 		String assetcode = "TEST"+ String.valueOf(generateRandomNum());
 		
-		if(!ifAssetAvailable(assetcode)){		
 		stock_serializedItem(assetcode, "BAL-MUNDKA-MDEL", "ON HAND", null, "SPART10001", null, 446, "LOT-A1");
-		}
+		
+		if(ifAssetAvailable(assetcode)){	
 		
 		selectRoutine("Asset Update");
 		String text = GetText(ID_ACTION_BAR_SUBTITLE, "Routine name");
@@ -57,10 +60,24 @@ public class AssetUpdate extends Utility implements RoutineObjectRepository {
 			EnterText(By.xpath(String.format(XPATH_TXT, "Enter Notes :")), "Enter Notes :", "Asset Update - Test Notes");
 			ClickNext();
 			
+			EnterText(By.xpath(String.format(XPATH_TXT, "Enter Barcode (*) :")), "Enter Barcode (*) :" + assetcode, assetcode);
+			ClickNext();
+			
+			//Verify whether Transaction is completed successfully
+			result = isObjectPresent(By.xpath(String.format(XPATH_TXT, "Enter Barcode (*) :")),"Loop field - Enter Barcode (*) :");
+			
+			if(result){
+				report("Asset Update Transaction is successfull", LogStatus.PASS);
+			}else{
+				report("Asset Update Transaction is not successfull", LogStatus.FAIL);
+			}
+			
 		}
 		
+	}else{
+		test.log(LogStatus.FAIL, " Asset - "+ assetcode + "not stocked successfully");
 	}
-	
+	}
 	
 
 }
