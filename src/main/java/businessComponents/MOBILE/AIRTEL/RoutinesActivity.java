@@ -36,7 +36,7 @@ public class RoutinesActivity extends Utility implements RoutineObjectRepository
 		ScrolltoText(routineName);
 		Click(By.name(routineName), "Click - Routine - " + routineName + " is selected");
 	}
-
+//TEST
 	/*public void locationInquiry() throws TimeoutException, NoSuchElementException {
 
 		selectRoutine("Location Inquiry");
