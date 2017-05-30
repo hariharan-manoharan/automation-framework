@@ -30,10 +30,11 @@ public interface RoutineObjectRepository {
 	
 	By ID_ACTION_BAR_SUBTITLE = By.id("action_bar_subtitle");
 	By ID_MESSAGE= By.id("message");
+	By ID_ALERT_TITLE= By.id("alertTitle");
 	By ID_MESSAGE_CONFIRM_YES = By.id("button1");
 	By ID_MESSAGE_CONFIRM_NO = By.id("button2");
 	By ID_MESSAGE_OK = By.id("button1");
-	
+	By ID_PICKLLIST = By.id("list");
 	//android.webkit.WebView[@content-desc='Fulcrum Mobility']/android.widget.EditText[1]
 	
 	// NAME or CONTENT_DESC
@@ -54,6 +55,9 @@ public interface RoutineObjectRepository {
 	
 	
 	String XPATH_TXT = ".//android.view.View[@content-desc='%s']";
+	String XPATH_TXT_NAME = ".//android.view.View[@name='%s']";
+	
+	By XPATH_SPYGLASS = By.xpath(".//android.view.View[@content-desc='?']");
 	
 	
 	// TRANSFER REQUEST RELATED QUERIES

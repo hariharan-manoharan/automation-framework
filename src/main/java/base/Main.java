@@ -20,6 +20,7 @@ import main.java.testDataAccess.DataTableAbstractFactory;
 import main.java.testDataAccess.DataTableFactoryProducer;
 import main.java.utils.CopyLatestResult;
 import main.java.utils.GlobalProperties;
+import main.java.utils.TestRailListener;
 import main.java.utils.Utility;
 
 
@@ -41,9 +42,11 @@ public class Main{
 	private static DataTableAbstractFactory dataTableFactory;
 	private static DataTable dataTable;
 	private static ExecutionMode execMode;
+	private static TestRailListener testRailListenter;
 	private static ArrayList<TestParameters> testInstancesToRun;	
 	private static ExtentTest test;
 	private static int nThreads;
+	
 	
 
 	/**
@@ -54,8 +57,9 @@ public class Main{
 	
 	public static void main(String[] args) {
 		
-		initializeTestReport();		
-		prepare();		
+		initializeTestReport();			
+		prepare();	
+		initializeTestRailReporting();
 		collectRunInfo();		
 		setup();
 		execute();
@@ -107,8 +111,8 @@ public class Main{
 	private static void setup() {
 		
 		setUpExecutionMode();
-		initializeDataTable();		
-		
+		initializeDataTable();
+			
 	}
 		
 	
@@ -122,9 +126,14 @@ public class Main{
 	private static void execute() {
 
 		ExecutorService parallelExecutor = Executors.newFixedThreadPool(nThreads);
-
+		Runnable testRunner = null;
 		for (int currentTestInstance = 0; currentTestInstance < testInstancesToRun.size(); currentTestInstance++) {
-			Executor testRunner = new Executor(testInstancesToRun.get(currentTestInstance), report, execMode, dataTable);
+			if(properties.getProperty("testRail.enabled").equalsIgnoreCase("True")){
+			testRunner = new Executor(testInstancesToRun.get(currentTestInstance), report, execMode, dataTable, testRailListenter);
+			}else{
+			testRunner = new Executor(testInstancesToRun.get(currentTestInstance), report, execMode, dataTable);	
+			}
+			
 			parallelExecutor.execute(testRunner);
 		}
 
@@ -246,6 +255,19 @@ public class Main{
 		report = HtmlReport.getInstance();
 		report.loadConfig((new File("./src/main/resources/PropertyFiles/extent-report-config.xml")));
 		
+	}
+	
+	
+	private static void initializeTestRailReporting(){			
+		
+		if (properties.getProperty("testRail.enabled").equalsIgnoreCase("True")) {		
+		int projectId = Integer.parseInt(properties.getProperty("testRail.projectId"));
+		testRailListenter = new TestRailListener(projectId);
+		testRailListenter.initialize();
+		if (properties.getProperty("testRail.addNewRun").equalsIgnoreCase("True")) {	
+		testRailListenter.addTestRun();
+		}
+		}
 	}
 	
 	

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -20,6 +21,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
@@ -38,6 +40,7 @@ import com.relevantcodes.extentreports.LogStatus;
 
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidKeyCode;
 import main.java.reporting.HtmlReport;
 import main.java.testDataAccess.DataTable;
 
@@ -234,21 +237,14 @@ public class Utility {
 
 	public boolean isObjectPresent(final By by, final String objectName) {
 		
-		boolean present = false;
-		
 		try{
 		
-		present = this.driver.findElement(by).isDisplayed();
+		this.driver.findElement(by).isDisplayed();		
+		test.log(LogStatus.PASS, "Object - " + objectName + " is present", "");
+		return true;				
 		
-		if(present){
-			test.log(LogStatus.PASS, "Object - " + objectName + " is present", "");
-			return true;					
-		}else{
-			test.log(LogStatus.FAIL, "Object - " + objectName + " is not present", "");
-			return false;
-		}	
-		}catch(Exception e){
-			test.log(LogStatus.FAIL, "Object - " + objectName + " is not present", "");
+		}catch(NoSuchElementException  e){
+			test.log(LogStatus.INFO, "Object - " + objectName + " is not present", "");
 			return false;
 		}
 		
@@ -256,6 +252,40 @@ public class Utility {
 	}
 
 	
+	/**
+	 * This function is similar to waitCommand which waits until the object is available with timeout of 100 seconds polling every 5 seconds
+	 * and returns the value of until statement
+	 *  	  
+	 * @param1 By by
+	 * @param2 String fieldName	
+	 * @return boolean 
+	 * @author Hari
+	 * @since 12/27/2016
+	 * 
+	 */
+
+	public boolean isFieldDisplayed(final By by, final String fieldName) {
+		
+		boolean present = false;
+		
+		try{
+		
+		present = this.driver.findElement(by).isDisplayed();
+		
+		if(present){
+			test.log(LogStatus.PASS, "Field - " + fieldName + " is present", "");
+			return true;					
+		}else{
+			test.log(LogStatus.INFO, "Field - " + fieldName + " is not present", "");
+			return false;
+		}	
+		}catch(Exception e){
+			test.log(LogStatus.FAIL, "Field - " + fieldName + " is not present", "");
+			return false;
+		}
+		
+
+	}
 	/**
 	 * FulentWait Predicate - Waits until the object is available with timeout of 100 seconds polling every 5 seconds
 	 * 
@@ -347,6 +377,31 @@ public class Utility {
 			this.driver.findElement(by).click();
 			HardDelay(5000L);
 			takeScreenshot(reportName);
+		} catch (Exception ex) {
+			test.log(LogStatus.FAIL, ex);
+		}
+	}
+	
+	
+	/**
+	 * Function to click spyglass  - Need to Fix this one - Avoid getting the fieldIndex from user
+	 * 
+	 * @param1 String reportName	 
+	 * @return void
+	 * @author Hari 
+	 * @since 05/29/2017
+	 * 
+	 */
+
+	public void ClickSpyGlass(String pickListName, int fieldIndex) {
+		try {		
+			
+			//int fieldIndex = Integer.parseInt(driver.findElement(By.xpath(".//android.view.View[@content-desc='"+pickListName+"']")).getAttribute("index"));				
+			fieldIndex = fieldIndex+2;			
+					
+			this.driver.findElement(By.xpath(".//android.view.View[@index='"+String.valueOf(fieldIndex)+"']/android.view.View[@index='0']/android.view.View[@index='0']")).click();
+			HardDelay(5000L);
+			takeScreenshot("Clicked - "+pickListName +" Spy glass");
 		} catch (Exception ex) {
 			test.log(LogStatus.FAIL, ex);
 		}
@@ -749,13 +804,116 @@ public class Utility {
 
 	}
 	
-	public int generateRandomNum(){		
+	public int generateRandomNum(int bound){		
 	
 	Random rand = new Random(); 
-	return rand.nextInt(10000); 
+	return rand.nextInt(bound); 
 	
 	}
 	
+	
+	/**
+	 * Function to get Pick List value
+	 * 	 
+	 * @return void
+	 * @author Hari 
+	 * @since 12/27/2016
+	 * 
+	 */
+
+	@SuppressWarnings("unchecked")
+	public String GetPickListValue(int pickListRow) {		
+		
+		String text = null;
+		
+		try {
+			
+			List<WebElement> elements = this.driver.findElementsByXPath(".//android.widget.ListView[@resource-id='android:id/list']/android.widget.LinearLayout");
+			
+			for(WebElement element: elements){
+				List<WebElement> eles = element.findElements(By.className("android.widget.TextView"));
+				text = eles.get(pickListRow-1).getText();			
+				break;
+			}
+			
+			takeScreenshot("Pick List Values");	
+		} catch (Exception ex) {
+			test.log(LogStatus.FAIL, ex);
+		}
+		clickDeviceBackButton();
+		return text;
+	}
+	
+	/**
+	 * Function to get Pick List values
+	 * 	 
+	 * @return void
+	 * @author Hari 
+	 * @since 12/27/2016
+	 * 
+	 */
+
+
+	@SuppressWarnings("unchecked")
+	public List<String> GetPickListValues() {		
+		
+		List<String> values = new ArrayList<String>();
+		
+		try {
+			
+			List<WebElement> elements = this.driver.findElementsByXPath(".//android.widget.ListView[@resource-id='android:id/list']/android.widget.LinearLayout");
+			
+			for(WebElement element: elements){
+				List<WebElement> eles = element.findElements(By.className("android.widget.TextView"));
+				values.add(eles.get(0).getText());					
+			}
+			
+			takeScreenshot("Pick List Values");	
+		} catch (Exception ex) {
+			test.log(LogStatus.FAIL, ex);
+		}
+		clickDeviceBackButton();
+		return values;
+	}
+	
+		
+	public void swipeElementExample(WebElement element) {
+		  String orientation = driver.getOrientation().value();
+
+		  // get the X coordinate of the upper left corner of the element, then add the element's width to get the rightmost X value of the element
+		  int leftX = element.getLocation().getX();
+		  int rightX = leftX + element.getSize().getWidth();
+
+		  // get the Y coordinate of the upper left corner of the element, then subtract the height to get the lowest Y value of the element
+		  int upperY = element.getLocation().getY();
+		  int lowerY = upperY - element.getSize().getHeight();
+		  int middleY = (upperY - lowerY) / 2;
+
+		  if (orientation.equals("portrait")) {
+		    // Swipe from just inside the left-middle to just inside the right-middle of the element over 500ms
+		      driver.swipe(leftX + 5, middleY, rightX - 5, middleY, 500);
+		  }
+		  else if (orientation.equals("landscape")) {
+		    // Swipe from just inside the right-middle to just inside the left-middle of the element over 500ms
+		    driver.swipe(rightX - 5, middleY, leftX + 5, middleY, 500);
+		  }
+		}
+	
+	
+	public void clickDeviceBackButton(){
+		driver.pressKeyCode(AndroidKeyCode.BACK);
+	}
+	
+	
+	public void horizontalScroll()
+    {
+		Dimension size=driver.manage().window().getSize();
+        int x_start=(int)(size.width*0.60);
+        int x_end=(int)(size.width*0.30);
+        int y=130;
+        System.out.println("");
+        driver.swipe(x_start,y,x_end,y,4000);
+    }
 	
 	public void executeQuery(String query, String report) {
 		Statement stmt;		

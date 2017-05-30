@@ -160,7 +160,7 @@ public class MSExcel implements DataTable {
 			Cell value = currentRow.getCell(col, Row.RETURN_BLANK_AS_NULL);
 			if (key == null) {
 				// The spreadsheet is empty in this cell
-			} else {
+			} else if (value != null){
 
 				switch (value.getCellType()) {
 				case Cell.CELL_TYPE_STRING:

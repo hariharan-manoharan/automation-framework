@@ -35,10 +35,19 @@ public class FunctionalComponents extends Utility {
 		profilesActivity.selectProfile();
 	}
 	
-
-	public void assetUpdateRoutine() throws TimeoutException, NoSuchElementException {
-		AssetUpdate routinesActivity = new AssetUpdate(test, driver, dataTable);
-		routinesActivity.assetUpdate();
+	
+	public void openContainer() throws TimeoutException, NoSuchElementException {
+		Container Container = new Container(test, driver, dataTable);
+		Container.openContainer();
 	}
-
+	
+	public void closeContainer() throws TimeoutException, NoSuchElementException {
+		Container Container = new Container(test, driver, dataTable);
+		Container.closeContainer();
+	}
+	
+	public void addToContainer() throws TimeoutException, NoSuchElementException {
+		Container Container = new Container(test, driver, dataTable);
+		Container.addToContainer();
+	}
 }

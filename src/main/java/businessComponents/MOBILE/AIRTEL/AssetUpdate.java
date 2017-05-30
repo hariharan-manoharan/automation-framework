@@ -31,7 +31,7 @@ public class AssetUpdate extends Utility implements RoutineObjectRepository {
 	public void assetUpdate() throws TimeoutException, NoSuchElementException,  WebDriverException {
 		
 		
-		String assetcode = "TEST"+ String.valueOf(generateRandomNum());
+		String assetcode = "TEST"+ String.valueOf(generateRandomNum(1000));
 		
 		stock_serializedItem(assetcode, "BAL-MUNDKA-MDEL", "ON HAND", null, "SPART10001", null, 446, "LOT-A1");
 		
@@ -45,7 +45,7 @@ public class AssetUpdate extends Utility implements RoutineObjectRepository {
 			ClickNext();
 			EnterText(By.xpath(String.format(XPATH_TXT, "Enter Barcode (*) :")), "Enter Barcode (*) :" + assetcode, assetcode);
 			ClickNext();
-			String serialNumber = "SLNUM"+generateRandomNum();
+			String serialNumber = "SLNUM"+generateRandomNum(1000);
 			EnterText(By.xpath(String.format(XPATH_TXT, "Enter New Serial Number :")), "Enter New Serial Number :" + serialNumber, serialNumber);
 			ClickNext();
 			ClickNext();

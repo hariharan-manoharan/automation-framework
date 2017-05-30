@@ -27,6 +27,7 @@ import main.java.executionSetup.TestParameters;
 import main.java.testDataAccess.DataTable;
 import main.java.utils.AppiumServerHandler;
 import main.java.utils.AppiumServerHandlerCmd;
+import main.java.utils.TestRailListener;
 import main.java.utils.Utility;
 
 public class Executor extends Utility implements Runnable {
@@ -40,7 +41,19 @@ public class Executor extends Utility implements Runnable {
 	private AppiumServerHandlerCmd appiumServerHandlerCmd;
 	@SuppressWarnings("rawtypes")
 	private AndroidDriver driver;
+	private TestRailListener testRailListenter;
+	String testRailEnabled = properties.getProperty("testRail.enabled");
+	int projectId = Integer.parseInt(properties.getProperty("testRail.projectId"));
 
+	public Executor(TestParameters testParameters, ExtentReports report, ExecutionMode execMode, DataTable dataTable, TestRailListener testRailListenter) {
+		this.testParameters = testParameters;
+		this.report = report;
+		this.execMode = execMode;
+		this.dataTable = dataTable;
+		this.testRailListenter = testRailListenter;
+
+	}
+	
 	public Executor(TestParameters testParameters, ExtentReports report, ExecutionMode execMode, DataTable dataTable) {
 		this.testParameters = testParameters;
 		this.report = report;
@@ -69,7 +82,13 @@ public class Executor extends Utility implements Runnable {
 
 				test.log(LogStatus.INFO, testParameters.getCurrentTestCase() + " execution completed", "");
 				report.endTest(test);
-				report.flush();
+				report.flush();				
+					
+				if(test.getRunStatus() == LogStatus.PASS && testRailEnabled.equalsIgnoreCase("True")){
+				testRailListenter.addTestResult(Integer.parseInt(testParameters.getCurrentTestCase()), 1);
+				}else if (testRailEnabled.equalsIgnoreCase("True")) {
+				testRailListenter.addTestResult(Integer.parseInt(testParameters.getCurrentTestCase()), 5);	
+				}
 			}
 		} catch (SessionNotCreatedException e) {
 			test.log(LogStatus.FAIL, "Android Driver and Appium server setup not done Successfully", "");
@@ -183,7 +202,7 @@ public class Executor extends Utility implements Runnable {
 		capabilities.setCapability("appActivity", testParameters.getAppActivity());
 		capabilities.setCapability("unicodeKeyboard", "true");
 		capabilities.setCapability("resetKeyboard", "true");
-		capabilities.setCapability("newCommandTimeout", "60");		
+		capabilities.setCapability("newCommandTimeout", 300);		
 		capabilities.setCapability("noReset", true);
 		
 		driver = new AndroidDriver(new URL(
@@ -195,6 +214,7 @@ public class Executor extends Utility implements Runnable {
 		test.log(LogStatus.INFO, "Android Driver and Appium server setup done Successfully", "");
 
 	}
+
 
 	public void end() {
 
