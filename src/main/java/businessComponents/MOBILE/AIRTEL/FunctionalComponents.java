@@ -70,8 +70,7 @@ public class FunctionalComponents extends Utility {
 		String validatePO = "SELECT * FROM CATSCON_PO_STG WHERE PHA_PO_NUMBER='%s' AND RECORD_ID=%d";
 		LinkedHashMap<String, String> dataMap = dataTable.getRowData("Data_Staging");		
 		int recordId = createPurchaseOrder(dataMap);
-		validateInboundTransaction("PO", validatePO, dataMap.get("VALUE2"),recordId);
-		poTaxUpdate(dataMap);
+		validateInboundTransaction("PO", validatePO, dataMap.get("VALUE2"),recordId);		
 	}
 	
 	public void createBillOfMaterial(){
