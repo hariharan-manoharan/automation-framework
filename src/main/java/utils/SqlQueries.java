@@ -4,6 +4,9 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class SqlQueries extends Utility{
 	
@@ -98,4 +101,8 @@ public class SqlQueries extends Utility{
 		
 		executeQuery(query, "Stock - Non Serialized item - Partcode: "+i_partcode);
 	}
+	
+	
+
+
 }

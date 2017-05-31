@@ -53,7 +53,7 @@ public class Utility {
 	public static Properties properties;
 	public static Connection connection;
 	public static LinkedHashMap<String, String> environmentVariables;
-	
+	int verifyCounter = 0;
 	
 
 	@SuppressWarnings("rawtypes")
@@ -922,7 +922,21 @@ public class Utility {
 			stmt.executeQuery(query);
 			test.log(LogStatus.PASS, report + " executed successfully");
 		} catch (SQLException e) {
-			test.log(LogStatus.PASS, report + " not executed successfully");
+			test.log(LogStatus.FAIL, report + " not executed successfully");
+			test.log(LogStatus.FAIL, e);
+		}
+
+	}
+	
+	
+	public void executeUpdateQuery(String query, String report) {
+		Statement stmt;		
+		try {
+			stmt = connection.createStatement();
+			stmt.executeUpdate(query);
+			test.log(LogStatus.PASS, report + " executed successfully");
+		} catch (SQLException e) {
+			test.log(LogStatus.FAIL, report + " not executed successfully");
 			test.log(LogStatus.FAIL, e);
 		}
 
@@ -1060,8 +1074,9 @@ public boolean checkRecordAvailable(String query) {
 	public void Closeconnections() throws Exception {
 		try {
 			connection.close();
-			if (connection.isClosed())
-				System.out.println("Connection closed.");
+			if (connection.isClosed()){
+				//System.out.println("Connection closed.");
+			}
 
 		} catch (Exception e) {
 			test.log(LogStatus.FAIL, e);
@@ -1156,5 +1171,416 @@ public boolean checkRecordAvailable(String query) {
 		return partcode;
 
 	}
+	
+	
+public void createNewPart(LinkedHashMap<String, String> inputValueMap){
+		
+		
+	try {
+		String query = "INSERT "
+				+"INTO CATS.CATSCON_PART_STG"
+				  +"("
+				    +"ORGANIZATION_ID,"
+				    +"ITEM,"
+				    +"DESCRIPTION,"
+				    +"ITEM_STATUS_ACTIVE,"
+				    +"COSTING_ENABLED_FLAG,"
+				    +"SERIALIZED_FLAG,"
+				    +"KIT_FLAG,"
+				    +"ASSEMBLY_FLAG,"
+				    +"LOT_CONTROL,"
+				    +"EXPENSE_ACCOUNT,"
+				    +"PURCHASABLE_FLAG,"
+				    +"PRIMARY_UNIT_OF_MEASURE,"
+				    +"BTVL_ITEM_CATEGORY,"
+				    +"BTVL_ITEM_TYPE,"
+				    +"ASSET_CATEGORY,"
+				    +"USER_ITEM_TYPE,"
+				    +"RECORD_ID,"
+				    +"CREATION_DATE,"
+				    +"PROCESS_FLAG"
+				  +")"
+				  +"VALUES"
+				  +"("
+				    + Integer.parseInt(inputValueMap.get("VALUE1"))+","
+				    +"'"+inputValueMap.get("VALUE2")+"',"
+				    +"'"+inputValueMap.get("VALUE3")+"',"
+				    +"'"+inputValueMap.get("VALUE4")+"',"
+				    +"'"+inputValueMap.get("VALUE5")+"',"
+				    +"'"+inputValueMap.get("VALUE6")+"',"
+				    +"'"+inputValueMap.get("VALUE7")+"',"
+				    +"'"+inputValueMap.get("VALUE8")+"',"
+				    +"'"+inputValueMap.get("VALUE9")+"',"
+				    +"'"+inputValueMap.get("VALUE10")+"',"
+				    +"'"+inputValueMap.get("VALUE11")+"',"
+				    +"'"+inputValueMap.get("VALUE12")+"',"
+				    +"'"+inputValueMap.get("VALUE13")+"',"
+				    +"'"+inputValueMap.get("VALUE14")+"',"
+				    +"'"+inputValueMap.get("VALUE15")+"',"
+				    +"'"+inputValueMap.get("VALUE16")+"',"
+				    +generateRandomNum(10000000)+","
+				    +inputValueMap.get("VALUE18")+","
+				    +"'"+inputValueMap.get("VALUE19")+"')";				
+			
+		executeUpdateQuery(query, "Part Code "+inputValueMap.get("VALUE2")+" is inserted into CATSCON_PART_STG table");
+		connection.commit();			
+		
+	} catch (SQLException e) {		
+		e.printStackTrace();
+	}	
+
+}
+
+
+	public void addMfgForItem(LinkedHashMap<String, String> inputValueMap) {
+		String query = null;		
+		try {
+			
+			query = "INSERT "
+					 +"INTO CATS.CATSCON_MFG_STG"
+					   +"("
+					     +"MANUFACTURER_NAME,"
+					     +"MFG_PART_NUM,"
+					     +"ITEM_SEGMENT1,"
+					     +"DESCRIPTION,"
+					     +"UNIQUE_ID,"
+					     +"RECORD_ID,"
+					     +"CREATION_DATE,"
+					     +"PROCESS_FLAG"
+					   +")"
+					   +"VALUES"
+					   +"("
+					     +"'"+inputValueMap.get("VALUE1")+"',"
+					     +"'"+inputValueMap.get("VALUE2")+"',"
+					     +"'"+inputValueMap.get("VALUE3")+"',"
+					     +"'"+inputValueMap.get("VALUE4")+"',"
+					     +"'"+inputValueMap.get("VALUE5")+"',"
+					     +generateRandomNum(10000000)+","
+					     +inputValueMap.get("VALUE7")+","
+					     +"'"+inputValueMap.get("VALUE8")+"')";	
+			
+			//System.out.println(query);
+			
+			executeUpdateQuery(query, "MFG "+inputValueMap.get("VALUE1")+" with MFG Part # "+inputValueMap.get("VALUE2")+" is added for Item code "+inputValueMap.get("VALUE3")+" into CATSCON_MFG_STG table");
+			connection.commit();			
+			
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		}	
+		
+	}
+
+	
+	public int createPurchaseOrder(LinkedHashMap<String, String> inputValueMap){
+		String query = null;		
+		int RECORD_ID = 0;
+		try {
+			
+			RECORD_ID = generateRandomNum(10000000);
+			
+			query="INSERT "
+					+"INTO CATS.CATSCON_PO_STG"
+					  +"("
+					    +"PHA_OPERATING_UNIT_ID,"
+					    +"PHA_PO_NUMBER,"
+					    +"PHA_REVISION_NUM,"
+					    +"PHA_VENDOR_NUMBER,"
+					    +"PHA_VENDOR_NAME,"
+					    +"PHA_VENDOR_SITE_CODE,"
+					    +"PHA_SHIP_TO_LOCATION_ID,"
+					    +"PHA_COMMENTS,"
+					    +"PHA_AUTHORIZATION_STATUS,"
+					    +"PHA_CANCEL_FLAG,"
+					    +"PHA_CLOSED_CODE,"
+					    +"PHA_CURRENCY_CODE,"
+					    +"PHA_CREATION_DATE,"
+					    +"PHA_APPROVED_DATE,"
+					    +"PHA_LAST_UPDATE_DATE,"
+					    +"PHA_CREATED_BY,"
+					    +"PLA_LINE_NUM,"
+					    +"PLA_ITEM_CODE,"
+					    +"PLA_ITEM_DESCRIPTION,"
+					    +"PLA_ITEM_CATEGORY,"
+					    +"PLA_UNIT_MEASURE_CODE,"
+					    +"PLA_UNIT_PRICE,"
+					    +"PLA_WARRANTY_START_DATE,"
+					    +"PLA_WARRANTY_PERIOD,"
+					    +"PLA_CANCEL_FLAG,"
+					    +"PLA_CLOSED_CODE,"
+					    +"PLA_CREATION_DATE,"
+					    +"PLA_LAST_UPDATE_DATE,"
+					    +"PLLA_SHIPMENT_NUM,"
+					    +"PLLA_SHIP_TO_ORGANIZATION_ID,"
+					    +"PLLA_SHIP_TO_LOCATION_ID,"
+					    +"PLLA_QUANTITY_ORDERED,"
+					    +"PLLA_NEED_BY_DATE,"
+					    +"PLLA_QUANTITY_RECEIVED,"
+					    +"PLLA_QUANTITY_CANCELLED,"
+					    +"PLLA_CLOSED_CODE,"
+					    +"PDA_PO_DISTRIBUTION_ID,"
+					    +"PDA_DISTRIBUTION_NUM,"
+					    +"PDA_DESTINATION_TYPE_CODE,"
+					    +"PDA_CHARGE_ACCOUNT,"
+					    +"PDA_EX_RATE_DATE,"
+					    +"RECORD_ID,"
+					    +"CREATION_DATE,"
+					    +"PROCESS_FLAG"
+					  +")"
+					  +"VALUES"
+					  +"("
+					    +"'"+inputValueMap.get("VALUE1")+"',"
+					    +"'"+inputValueMap.get("VALUE2")+"',"
+					    +"'"+inputValueMap.get("VALUE3")+"',"
+					    +"'"+inputValueMap.get("VALUE4")+"',"
+					    +"'"+inputValueMap.get("VALUE5")+"',"
+					    +"'"+inputValueMap.get("VALUE6")+"',"
+					    +"'"+inputValueMap.get("VALUE7")+"',"
+					    +"'"+inputValueMap.get("VALUE8")+"',"
+					    +"'"+inputValueMap.get("VALUE9")+"',"
+					    +"'"+inputValueMap.get("VALUE10")+"',"
+					    +"'"+inputValueMap.get("VALUE11")+"',"
+					    +"'"+inputValueMap.get("VALUE12")+"',"
+					    +inputValueMap.get("VALUE13")+","
+					    +inputValueMap.get("VALUE14")+","
+					    +inputValueMap.get("VALUE15")+","
+					    +"'"+inputValueMap.get("VALUE16")+"',"
+					    +"'"+inputValueMap.get("VALUE17")+"',"
+					    +"'"+inputValueMap.get("VALUE18")+"',"
+					    +"'"+inputValueMap.get("VALUE19")+"',"
+					    +"'"+inputValueMap.get("VALUE20")+"',"
+					    +"'"+inputValueMap.get("VALUE21")+"',"
+					    +"'"+inputValueMap.get("VALUE22")+"',"
+					    +"'"+inputValueMap.get("VALUE23")+"',"
+					    +"'"+inputValueMap.get("VALUE24")+"',"
+					    +"'"+inputValueMap.get("VALUE25")+"',"
+					    +"'"+inputValueMap.get("VALUE26")+"',"
+					    +inputValueMap.get("VALUE27")+","
+					    +inputValueMap.get("VALUE28")+","
+					    +"'"+inputValueMap.get("VALUE29")+"',"
+					    +"'"+inputValueMap.get("VALUE30")+"',"
+					    +"'"+inputValueMap.get("VALUE31")+"',"
+					    +"'"+inputValueMap.get("VALUE32")+"',"
+					    +inputValueMap.get("VALUE33")+","
+					    +"'"+inputValueMap.get("VALUE34")+"',"
+					    +"'"+inputValueMap.get("VALUE35")+"',"
+					    +"'"+inputValueMap.get("VALUE36")+"',"
+					    +"'"+inputValueMap.get("VALUE37")+"',"
+					    +"'"+inputValueMap.get("VALUE38")+"',"
+					    +"'"+inputValueMap.get("VALUE39")+"',"
+					    +"'"+inputValueMap.get("VALUE40")+"',"
+					    +inputValueMap.get("VALUE41")+","
+					    +RECORD_ID+","
+					    +inputValueMap.get("VALUE43")+","
+					    +"'"+inputValueMap.get("VALUE44")+"')";
+					 
+			//System.out.println(query);
+			executeUpdateQuery(query, "PO - "+inputValueMap.get("VALUE2")+" for Item "+inputValueMap.get("VALUE18")+" is inserted in to CATSCON_PO_STG table");
+			connection.commit();			
+			
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		}
+		return RECORD_ID;
+	}
+	
+	public void createBillOfMaterial(LinkedHashMap<String, String> inputValueMap){
+		String query = null;		
+		try {
+			
+			query = "INSERT "
+						+"INTO CATS.CATSCON_BOM_STG"
+						  +"("
+						    +"ORGANIZATION_CODE,"
+						    +"ORGANIZATION_ID,"
+						    +"BILL_ITEM_NAME,"
+						    +"ITEM_SEQUENCE_NUMBER,"
+						    +"COMPONENT_ITEM_NAME,"
+						    +"QUANTITY_PER_ASSEMBLY,"
+						    +"START_EFFECTIVE_DATE,"
+						    +"UNIQUE_ID,"
+						    +"RECORD_ID,"
+						    +"CREATION_DATE,"
+						    +"PROCESS_FLAG,"
+						    + "YIELD"
+						  +")"
+						  +"VALUES"
+						  +"("
+						  	+"'"+inputValueMap.get("VALUE1")+"',"
+						  	+ Integer.parseInt(inputValueMap.get("VALUE2"))+","
+						    +"'"+inputValueMap.get("VALUE3")+"',"
+						    + Integer.parseInt(inputValueMap.get("VALUE4"))+","
+						    +"'"+inputValueMap.get("VALUE5")+"',"
+						    + Integer.parseInt(inputValueMap.get("VALUE6"))+","
+						    +inputValueMap.get("VALUE7")+","
+						    +"'"+inputValueMap.get("VALUE8")+"',"
+						    +generateRandomNum(10000000)+","
+						    +inputValueMap.get("VALUE10")+","
+						    +"'"+inputValueMap.get("VALUE11")+"',"
+						    +"'"+inputValueMap.get("VALUE12")+"')";
+						 
+			System.out.println(query);
+			executeUpdateQuery(query, "BOM is created for Item code - "+inputValueMap.get("VALUE3")+" where, Item Sequence # - "+inputValueMap.get("VALUE4")+
+																										", Component Item Code - "+inputValueMap.get("VALUE5")+
+																										", Qty Per Assembly - "+ inputValueMap.get("VALUE6") );
+			connection.commit();			
+			
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		}
+	}
+	
+	public int createMaterialReceiveReceipt(LinkedHashMap<String, String> inputValueMap){
+		String query = null;
+		int RECORD_ID = 0;
+		try {
+			
+			RECORD_ID = generateRandomNum(10000000);
+			
+			query = "INSERT "
+						+"INTO CATSCON_MRR_STG"
+						  +"("
+						    +"OPERATING_UNIT,"
+						    +"TO_ORGANIZATION_ID,"
+						    +"VENDOR_NUMBER,"
+						    +"VENDOR_NAME,"
+						    +"VENDOR_SITE_CODE,"
+						    +"PO_NUMBER,"
+						    +"PO_LINE_NUM ,"
+						    +"PO_SHIPMENT_NUM,"
+						    +"RECEIPT_NUM,"
+						    +"SHIPMENT_NUM,"
+						    +"SHIPPED_DATE,"
+						    +"TRANSACTION_DATE,"
+						    +"TRANSACTION_ID,"
+						    +"SHIPMENT_HEADER_ID,"
+						    +"SHIPMENT_LINE_ID,"
+						    +"ITEM_CODE ,"
+						    +"QUANTITY,"
+						    +"LOCATION_ID,"
+						    +"PO_UNIT_PRICE,"
+						    +"H_ATTRIBUTE10,"
+						    +"H_ATTRIBUTE11,"
+						    +"H_ATTRIBUTE14,"
+						    +"H_ATTRIBUTE6,"
+						    +"H_ATTRIBUTE7,"
+						    +"H_ATTRIBUTE8,"
+						    +"H_ATTRIBUTE9 ,"
+						    +"L_ATTRIBUTE10,"
+						    +"L_ATTRIBUTE12,"
+						    +"L_ATTRIBUTE13,"
+						    +"DESTINATION_TYPE_CODE,"
+						    +"MRR_CREATED_BY,"
+						    +"INTERFACE_NAME,"
+						    +"RECORD_ID,"
+						    +"PROCESS_FLAG,"
+						    +"CREATION_DATE,"
+						    +"CREATED_BY"
+						  +")"
+						  +"VALUES"
+						  +"("
+						  	+ Integer.parseInt(inputValueMap.get("VALUE1"))+","
+						  	+ Integer.parseInt(inputValueMap.get("VALUE2"))+","
+						    +"'"+inputValueMap.get("VALUE3")+"',"
+						    +"'"+inputValueMap.get("VALUE4")+"',"
+						    +"'"+inputValueMap.get("VALUE5")+"',"
+						    +"'"+inputValueMap.get("VALUE6")+"',"
+						    + Integer.parseInt(inputValueMap.get("VALUE7"))+","
+						    + Integer.parseInt(inputValueMap.get("VALUE8"))+","
+						    +"'"+inputValueMap.get("VALUE9")+"',"
+						    +"'"+inputValueMap.get("VALUE10")+"',"
+						    +inputValueMap.get("VALUE11")+","
+						    +inputValueMap.get("VALUE12")+","
+						    +generateRandomNum(10000000)+","
+						    +generateRandomNum(10000000)+","
+						    + Integer.parseInt(inputValueMap.get("VALUE15"))+","
+						    +"'"+inputValueMap.get("VALUE16")+"',"
+						    + Integer.parseInt(inputValueMap.get("VALUE17"))+","
+						    + Integer.parseInt(inputValueMap.get("VALUE18"))+","
+						    + Integer.parseInt(inputValueMap.get("VALUE19"))+","
+						    +"'"+inputValueMap.get("VALUE20")+"',"
+						    +"'"+inputValueMap.get("VALUE21")+"',"
+						    +"'"+inputValueMap.get("VALUE22")+"',"
+						    +"'"+inputValueMap.get("VALUE23")+"',"
+						    +inputValueMap.get("VALUE24")+","
+						    +inputValueMap.get("VALUE25")+","
+						    +inputValueMap.get("VALUE26")+","
+						    +"'"+inputValueMap.get("VALUE27")+"',"
+						    +"'"+inputValueMap.get("VALUE28")+"',"
+						    +"'"+inputValueMap.get("VALUE29")+"',"
+						    +"'"+inputValueMap.get("VALUE30")+"',"
+						    +inputValueMap.get("VALUE31")+","
+						    +"'"+inputValueMap.get("VALUE32")+"',"
+						    +RECORD_ID+","
+						    +"'"+inputValueMap.get("VALUE34")+"',"
+						    +inputValueMap.get("VALUE35")+","
+						    + Integer.parseInt(inputValueMap.get("VALUE36"))+")";
+			
+			//System.out.println(query);
+			
+			executeUpdateQuery(query, "MRR - "+inputValueMap.get("VALUE9")+" is created for PO - "+inputValueMap.get("VALUE6"));
+			connection.commit();			
+			
+			
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		}
+		return RECORD_ID;
+	}
+	
+	public void poTaxUpdate(LinkedHashMap<String, String> inputValueMap){
+		String query = null;		
+		try {			
+			query = "UPDATE CATSCUST_MRR "
+					+"SET TAX_UPDATE = 'Y'"
+					+"WHERE MRRID IN (SELECT MRRID FROM CATSCUST_MRR WHERE POCODE='"+inputValueMap.get("VALUE6")+"')";
+			executeUpdateQuery(query, "Tax Update for PO - "+inputValueMap.get("VALUE6")+" is done successfully");
+			connection.commit();			
+			
+		} catch (SQLException e) {	
+			test.log(LogStatus.FAIL, "Tax Update for PO - "+inputValueMap.get("VALUE6")+" is not done successfully");
+			e.printStackTrace();			
+		}
+	}
+	
+	
+	
+	
+	//Transaction Validations
+	
+	public void validateInboundTransaction(String inboundType, String query, String inputValue1, int recordId) {
+		ResultSet rs;
+		Statement stmt;
+		String PROCESS_FLAG;
+		String ERROR_MESSAGE;
+		
+		try {
+			stmt = connection.createStatement();
+			rs = stmt.executeQuery(String.format(query, inputValue1,recordId ));
+			while (rs.next()) {
+				PROCESS_FLAG = rs.getString("PROCESS_FLAG");
+				
+				verifyCounter++;
+				if (PROCESS_FLAG.equals("P")) {
+					test.log(LogStatus.PASS,inboundType +" - " + inputValue1 + " is processed successfully (RECORD_ID - " + recordId + ")");
+					verifyCounter=0;
+					break;
+				} else {
+					if (verifyCounter < 3) {
+						HardDelay(30000);
+						validateInboundTransaction(inboundType, query, inputValue1, recordId);
+					} else {
+						ERROR_MESSAGE = rs.getString("ERROR_MESSAGE");
+						test.log(LogStatus.FAIL,inboundType +" - " + inputValue1 + " is not processed successfully (RECORD_ID - " + recordId + ")");
+						test.log(LogStatus.INFO,"PROCESS_FLAG - "+PROCESS_FLAG+" ERROR_MESSAGE - "+ERROR_MESSAGE);
+						verifyCounter=0;
+					}
+
+				}
+			}
+		} catch (SQLException e) {
+			test.log(LogStatus.FAIL, e);
+		}
+	}
+	
 
 }

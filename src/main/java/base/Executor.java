@@ -142,8 +142,10 @@ public class Executor extends Utility implements Runnable {
 			throws ExecuteException, IOException, InterruptedException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
 			SecurityException, SessionNotCreatedException, TimeoutException, NoSuchElementException {
-
+		
+		if(!testParameters.getCurrentTestCase().contains("STAGE_DATA")){
 		driverSetUp();
+		}
 
 		Class<?> className = Class.forName("main.java.businessComponents." + execMode + "."
 				+ properties.getProperty("Project") + ".FunctionalComponents");
