@@ -53,7 +53,7 @@ public class FunctionalComponents extends Utility {
 		Container.addToContainer();
 	}
 	
-<<<<<<< HEAD
+
 	
 	//SQL FUNCTIONS
 	
@@ -91,14 +91,12 @@ public class FunctionalComponents extends Utility {
 		poTaxUpdate(dataMap);
 	}
 
-	
-	
-=======
+
 	public void itemInquiry() throws TimeoutException, NoSuchElementException{
 		
 		Inquiry Inquiry = new Inquiry(test, driver , dataTable);
 		Inquiry.itemInquiry();
 		
 	}
->>>>>>> 9961b89f526361feb7b4364f4684048339e7e20b
+
 }
