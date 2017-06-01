@@ -57,13 +57,17 @@ public class FunctionalComponents extends Utility {
 	//SQL FUNCTIONS
 	
 	public void createNewPart(){
-		LinkedHashMap<String, String> dataMap = dataTable.getRowData("Data_Staging");
-		createNewPart(dataMap);
+		String validateItem = "SELECT * FROM CATSCON_PART_STG WHERE ITEM='%s' AND RECORD_ID=%d";
+		LinkedHashMap<String, String> dataMap = dataTable.getRowData("Data_Staging");		
+		int recordId = createNewPart(dataMap);
+		validateInboundTransaction("Item", validateItem, dataMap.get("VALUE2"),recordId);	
 	}
 	
 	public void addManufacturer(){
-		LinkedHashMap<String, String> dataMap = dataTable.getRowData("Data_Staging");
-		addMfgForItem(dataMap);
+		String validateMFG = "SELECT * FROM CATSCON_MFG_STG WHERE MANUFACTURER_NAME='%s' AND RECORD_ID=%d";
+		LinkedHashMap<String, String> dataMap = dataTable.getRowData("Data_Staging");		
+		int recordId = addMfgForItem(dataMap);
+		validateInboundTransaction("MFG", validateMFG, dataMap.get("VALUE1"),recordId);
 	}
 	
 	public void createPurchaseOrder(){

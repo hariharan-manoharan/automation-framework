@@ -1173,11 +1173,14 @@ public boolean checkRecordAvailable(String query) {
 	}
 	
 	
-public void createNewPart(LinkedHashMap<String, String> inputValueMap){
+public int createNewPart(LinkedHashMap<String, String> inputValueMap){
 		
-		
+	String query = null;	
+	int RECORD_ID = 0;
 	try {
-		String query = "INSERT "
+		
+		RECORD_ID = generateRandomNum(10000000);
+		query = "INSERT "
 				+"INTO CATS.CATSCON_PART_STG"
 				  +"("
 				    +"ORGANIZATION_ID,"
@@ -1218,7 +1221,7 @@ public void createNewPart(LinkedHashMap<String, String> inputValueMap){
 				    +"'"+inputValueMap.get("VALUE14")+"',"
 				    +"'"+inputValueMap.get("VALUE15")+"',"
 				    +"'"+inputValueMap.get("VALUE16")+"',"
-				    +generateRandomNum(10000000)+","
+				    +RECORD_ID+","
 				    +inputValueMap.get("VALUE18")+","
 				    +"'"+inputValueMap.get("VALUE19")+"')";				
 			
@@ -1227,14 +1230,18 @@ public void createNewPart(LinkedHashMap<String, String> inputValueMap){
 		
 	} catch (SQLException e) {		
 		e.printStackTrace();
-	}	
+	}
+	return RECORD_ID;	
 
 }
 
 
-	public void addMfgForItem(LinkedHashMap<String, String> inputValueMap) {
+	public int addMfgForItem(LinkedHashMap<String, String> inputValueMap) {
 		String query = null;		
+		int RECORD_ID = 0;
 		try {
+			
+			RECORD_ID = generateRandomNum(10000000);
 			
 			query = "INSERT "
 					 +"INTO CATS.CATSCON_MFG_STG"
@@ -1255,7 +1262,7 @@ public void createNewPart(LinkedHashMap<String, String> inputValueMap){
 					     +"'"+inputValueMap.get("VALUE3")+"',"
 					     +"'"+inputValueMap.get("VALUE4")+"',"
 					     +"'"+inputValueMap.get("VALUE5")+"',"
-					     +generateRandomNum(10000000)+","
+					     +RECORD_ID+","
 					     +inputValueMap.get("VALUE7")+","
 					     +"'"+inputValueMap.get("VALUE8")+"')";	
 			
@@ -1266,7 +1273,8 @@ public void createNewPart(LinkedHashMap<String, String> inputValueMap){
 			
 		} catch (SQLException e) {			
 			e.printStackTrace();
-		}	
+		}
+		return RECORD_ID;	
 		
 	}
 
@@ -1567,6 +1575,7 @@ public void createNewPart(LinkedHashMap<String, String> inputValueMap){
 				} else {
 					if (verifyCounter < 3) {
 						HardDelay(30000);
+						test.log(LogStatus.INFO,verifyCounter + ": Re-checking PROCESS_FLAG after 30 secs wait....");
 						validateInboundTransaction(inboundType, query, inputValue1, recordId);
 					} else {
 						ERROR_MESSAGE = rs.getString("ERROR_MESSAGE");
