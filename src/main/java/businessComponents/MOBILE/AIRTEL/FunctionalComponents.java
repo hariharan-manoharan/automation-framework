@@ -50,4 +50,11 @@ public class FunctionalComponents extends Utility {
 		Container Container = new Container(test, driver, dataTable);
 		Container.addToContainer();
 	}
+	
+	public void itemInquiry() throws TimeoutException, NoSuchElementException{
+		
+		Inquiry Inquiry = new Inquiry(test, driver , dataTable);
+		Inquiry.itemInquiry();
+		
+	}
 }
